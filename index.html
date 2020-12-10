@@ -20,12 +20,15 @@
 
     <main id="app">
         <section>
-            <article :style="dotsDisplay">
-                <template v-for="(dot, i) in bools">
-                    <input type="checkbox" v-model="bools[i]" @pointerdown="draw">
+            <article :style="characterDisplay">
+                <template v-for="dot, i in character">
+                    <input type="checkbox" v-model="character[i]" @pointerdown="draw">
                 </template>
             </article>
+
             <span v-text="displayCode" title="Character Hexadecimal code (Click to select)" @click="selectText"></span>
+
+            <button @click="clear">Clear</button>
         </section>
         
         <section>
@@ -38,9 +41,10 @@
                         <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
                     </svg>
                 </button>
+
                 <template v-for="character, i in storage">
-                    <button :title="`Select character ${i + 1}`">
-                        <img :src="bits2url(getBits(character))" alt="`Character ${i + 1}`">
+                    <button :title="`Select character ${i + 1}`" @mousedown="select(i)">
+                        <img :src="bits2url(getBools(character))" alt="`Character ${i + 1}`">
                     </button>
                 </template>
             </section>

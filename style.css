@@ -66,8 +66,6 @@ main > section:first-child > article:active input[type='checkbox']:not(:checked)
         background-color: #6B2;
         -webkit-appearance: none;
         -mox-appearance: none;
-        touch-action: pan-y;
-        transition: background-color 100ms;
     }
     input[type='checkbox']:checked {
         background-color: #351;
