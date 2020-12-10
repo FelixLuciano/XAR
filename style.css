@@ -1,0 +1,138 @@
+body {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #8D2;
+    font-family: 'Manrope', sans-serif;
+    color: #351;
+    display: grid;
+    grid-gap: 1rem;
+    place-items: center;
+    cursor: default;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+  
+::selection {
+background-color: #351;
+color: #8D2;
+}
+::-moz-selection {
+    background-color: #351;
+    color: #8D2;
+}
+
+a,
+a:active,
+a:visited {
+  color: currentColor;
+}
+  
+main {
+    width: 100%;
+    display: grid;
+    grid-gap: 4rem;
+    display: grid;
+    place-items: center;
+}
+
+main > section:first-child {
+    height: 24rem;
+    display: grid;
+    place-items: center;
+    place-content: center;
+    grid-gap: 2rem;
+}
+
+main > section:first-child > article {
+    display: grid;
+    grid-gap: 1px;
+    grid-template-columns: repeat(var(--columns), 2rem);
+    grid-template-rows: repeat(var(--rows), 2rem);
+}
+main > section:first-child > article:hover input[type='checkbox']:not(:checked),
+main > section:first-child > article:active input[type='checkbox']:not(:checked) {
+    background-color: #6A2;
+}
+
+@supports (-webkit-appearance: none) or (-moz-appearance: none) {
+    input[type='checkbox'] {
+        margin: 0;
+        background-color: #6B2;
+        -webkit-appearance: none;
+        -mox-appearance: none;
+        touch-action: pan-y;
+        transition: background-color 100ms;
+    }
+    input[type='checkbox']:checked {
+        background-color: #351;
+    }
+    input[type='checkbox']:focus {
+        z-index: 100;
+    }
+}
+
+span {
+    font-family: "consolas", monospace;
+}
+
+main > section:nth-child(2) {
+    width: 100%;
+    padding: 0 6rem;
+}
+
+main > section:nth-child(2) > h1 {
+    font-size: 2.5em;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+main > section:nth-child(2) > section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 5rem);
+    grid-template-rows: repeat(auto-fill, 8rem);
+    grid-gap: 1rem;
+}
+
+main > section:nth-child(2) > section > button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: #6B2;
+    color: inherit;
+}
+main > section:nth-child(2) > section > button:hover {
+    background-color: #6A2;
+}
+
+main > section:nth-child(2) > section > button > svg {
+    width: 3rem;
+    height: 3rem;
+    fill: currentColor;
+}
+
+main > section:nth-child(2) > section > button > img {
+    width: 100%;
+    max-width: 100%;
+    image-rendering: pixelated;
+    display: block;
+}
+
+
+body > footer {
+    width: 100%;
+    padding: 0 1rem;
+    font-size: .8em;
+    line-height: 3rem;
+    align-self: end;
+}
+@media (max-width: 25rem) {
+    body > footer span {
+        display: none;
+    }
+}
