@@ -7,7 +7,7 @@ body {
     font-family: 'Manrope', sans-serif;
     color: #351;
     display: grid;
-    grid-gap: 1rem;
+    grid-template-rows: calc(100vh - 3rem) 3rem;
     place-items: center;
     cursor: default;
 }
@@ -35,14 +35,13 @@ a:visited {
   
 main {
     width: 100%;
+    height: 100%;
     display: grid;
-    grid-gap: 4rem;
-    display: grid;
+    grid-template-columns: 36rem auto;
     place-items: center;
 }
 
 main > section:first-child {
-    height: 24rem;
     display: grid;
     place-items: center;
     place-content: center;
@@ -52,8 +51,8 @@ main > section:first-child {
 main > section:first-child > article {
     display: grid;
     grid-gap: 1px;
-    grid-template-columns: repeat(var(--size-columns), 2rem);
-    grid-template-rows: repeat(var(--size-rows), 2rem);
+    grid-template-columns: repeat(var(--size-columns), 2.5rem);
+    grid-template-rows: repeat(var(--size-rows), 2.5rem);
 }
 main > section:first-child > article:hover input[type='checkbox']:not(:checked),
 main > section:first-child > article:active input[type='checkbox']:not(:checked) {
@@ -81,18 +80,38 @@ span {
     cursor: text;
 }
 
+main > section:first-child > button {
+    width: 7.5rem;
+    height: 2.5rem;
+    border: none;
+    background-color: #6B2;
+    font-family: "consolas", monospace;
+}
+
+main > section:first-child > button:hover,
+main > section:first-child > button:active {
+    background-color: #6A2;
+}
+
 main > section:nth-child(2) {
     width: 100%;
-    padding: 0 6rem;
+    height: 100%;
+    overflow: auto;
+    /* background-color: blue; */
 }
 
 main > section:nth-child(2) > h1 {
     font-size: 2.5em;
     margin: 0;
-    margin-bottom: 1rem;
+    padding: 0 6rem;
+    background-color: #8D2;
+    line-height: 5rem;
+    position: sticky;
+    top: 0;
 }
 
 main > section:nth-child(2) > section {
+    padding: 0 6rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, calc(1rem * var(--size-columns)));
     grid-template-rows: repeat(auto-fill, calc(1rem * var(--size-rows)));
@@ -106,6 +125,7 @@ main > section:nth-child(2) > section > button {
     background-color: #6B2;
     color: inherit;
 }
+
 main > section:nth-child(2) > section > button:hover {
     background-color: #6A2;
 }
@@ -130,6 +150,7 @@ body > footer {
     font-size: .8em;
     line-height: 3rem;
     align-self: end;
+    /* background-color: yellow; */
 }
 @media (max-width: 25rem) {
     body > footer span {
