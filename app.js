@@ -11,122 +11,19 @@ const XAR_app = {
         const _character = new Array(size).fill(false)
         const  character = reactive(_character)
 
-        const rows = computed(() => {
-            const length = Math.ceil(size / sizeColumns)
+        const binaries = computed(() => {
+            const binaries = []
 
-            const rows = [ ...Array(length).keys() ]
-                .map((i) => {
-                    const start = sizeColumns * i
-                    const end   = sizeColumns + start
-                    const row   = character.slice(start, end)
+            for (let i = 0; i < size; i += sizeColumns) {
+                const bools = character.slice(i, i + sizeColumns)
+                const bits  = bools.join("").replaceAll("true", "1").replaceAll("false", "0")
+                const bin   = parseInt(bits, 2)
 
-                    return row
-                })
-
-            return rows
-        })
-
-        const bool2bit = bool => bool ? 1 : 0
-        const bits2bin = bits => parseInt(bits.join(""), 2)
-
-        const bins = computed(() => {
-            return rows.value
-                .map(row => row.map(bool2bit))
-                .map(bits2bin)
-        })
-
-
-        const base        = 16
-        const bitRange    = 2**sizeColumns
-        const hexLength   = Math.ceil(Math.log(bitRange) / Math.log(base))
-
-        const displayCode = computed(() => bins.value.map(bin2hex).map(hexPrefix).join(", "))
-        const bin2code    = (base, length) => bin => bin.toString(base).toUpperCase().padStart(length, "0")
-        const bin2hex     = bin2code(16, hexLength)
-        const hexPrefix   = hex => "0x" + hex
-        
-        const characterDisplay = computed(() => {
-            return {
-                "--columns": sizeColumns,
-                "--rows": sizeRows,
+                binaries.push(bin)
             }
+
+            return binaries
         })
-        
-
-        const wideBase    = Math.min(bitRange, 36)
-        const wideLength  = Math.ceil(Math.log(bitRange) / Math.log(wideBase))
-
-        const bin2wide    = bin2code(wideBase, wideLength)
-        const compactCode = computed(() => bins.value.map(bin2wide).join(""))
-
-
-        const storage = reactive([])
-
-        const toStore = computed(() => storage.join(""))
-        const updateStorage = () => window.localStorage.setItem("XAR_storage", toStore.value)
-
-        const localStorage = window.localStorage.getItem("XAR_storage")
-        if (localStorage) {
-            const size = wideLength * sizeRows
-
-            localStorage
-                .match(new RegExp(`.{${size}}`, 'g'))
-                .forEach(character => {
-                    storage.push(character)
-                })
-        }
-        else updateStorage()
-
-        const storeCharacter  = () => storage.unshift(compactCode.value) && updateStorage()
-        const deleteCharacter = i => storage.splice(i, 1) && updateStorage()
-
-
-        const getBools = (code) => bits2bool(dec2bits(code2dec(code, wideBase, wideLength), sizeColumns))
-        
-        const code2dec  = (hex, base, length) => hex.match(new RegExp(`.{${length}}`, 'g')).map(chunck => parseInt(chunck, base))
-        const dec2bits  = (bins, length) => bins.map(bin => bin.toString(2).padStart(length, "0"))
-        const bits2bool = bits => bits.map(bit => bit.split("").map(bit2bool))
-        const bit2bool  = bit => bit == "1" ? true : false
-
-        const bits2url = (bits) => {
-            const canvas = document.createElement("canvas")
-            const ctx = canvas.getContext('2d')
-            
-            const width  = canvas.width  = sizeColumns
-            const height = canvas.height = sizeRows
-            ctx.fillStyle = "#351"
-            
-            for (let x = 0; x < width; x++)
-              for (let y = 0; y < height; y++)
-                if (bits[y][x])
-                  ctx.fillRect(x, y, 1, 1)
-            
-            return canvas.toDataURL()
-        }
-
-        function setCharacter (rows) {
-            const interval = 32
-            
-            rows.forEach((row, i) => {
-                const time = interval * i
-
-                setTimeout(() => {
-                    row.forEach((bool, j) => {
-                        const index = sizeColumns * i + j
-                        const time = interval * j
-
-                        setTimeout(() => character[index] = bool, time)
-                    })
-                }, time)
-            })
-        }
-
-        function clear () {
-            const cleanCharacter = new Array(sizeRows).fill(new Array(sizeColumns).fill(false))
-
-            setCharacter(cleanCharacter)
-        }
-
 
         function draw ({target: dot}) {
             const state = !dot.checked
@@ -156,8 +53,117 @@ const XAR_app = {
             dot.addEventListener('pointerleave', startDrawing)
             window.addEventListener('pointerup', endDrawing)
         }
+        
+        function clear () {
+            const cleanCharacter = new Array(sizeRows).fill(new Array(sizeColumns).fill(false))
 
-        function select (index) {
+            setCharacter(cleanCharacter)
+        }
+
+
+        const base      = 16
+        const bitRange  = 2**sizeColumns
+        const hexLength = Math.ceil(Math.log(bitRange) / Math.log(base))
+
+        const hexCode   = computed(() => {
+            return binaries.value
+                .map(bin => "0x" + bin.toString(16).toUpperCase().padStart(hexLength, "0"))
+                .join(", ")
+        })
+
+        function selectText ({ target }) {
+            window.getSelection().selectAllChildren(target)
+        }
+        
+
+        const codeBase     = Math.min(bitRange, 36)
+        const codeLength   = Math.ceil(Math.log(bitRange) / Math.log(codeBase))
+        const matchCodeBit = new RegExp(`.{${codeLength}}`, 'g')
+        const codeSize     = codeLength * sizeRows
+        const matchCode    = new RegExp(`.{${codeSize}}`, 'g')
+
+        const characterCode = computed(() => {
+            return binaries.value
+                .map(bin => bin.toString(codeBase).toUpperCase().padStart(codeLength, "0"))
+                .join("")
+        })
+
+
+        function parseCode (code) {
+            const match = code.match(matchCodeBit)
+
+            const bools = match.map(chunck => {
+                const bin   = parseInt(chunck, codeBase)
+                const bits  = bin.toString(2).padStart(sizeColumns, "0").split("")
+                const bools = bits.map(bit => bit == "1" ? true : false)
+
+                return bools
+            })
+            
+            return bools
+        }
+        
+        function getCharacter (code) {
+            const bools  = parseCode(code)
+            const canvas = document.createElement("canvas")
+            const ctx    = canvas.getContext('2d')
+            
+            const width  = canvas.width  = sizeColumns
+            const height = canvas.height = sizeRows
+            ctx.fillStyle = "#351"
+            
+            for (let x = 0; x < width; x++)
+            for (let y = 0; y < height; y++)
+            if (bools[y][x])
+            ctx.fillRect(x, y, 1, 1)
+            
+            const image = canvas.toDataURL()
+            
+            return image
+        }
+
+        const characterImg  = computed(() => getCharacter(characterCode.value))
+
+
+        const storage = reactive([])
+        const buffer  = reactive([])
+
+        const refreshStorage  = () => window.localStorage.setItem("XAR_storage", storage.join(""))
+        const storeCharacter  = () => storage.unshift(characterCode.value) && buffer.unshift(characterImg.value) && refreshStorage()
+        const deleteCharacter = i  => storage.splice(i, 1) && buffer.splice(i, 1) && refreshStorage()
+
+        const localStorage = window.localStorage.getItem("XAR_storage")
+
+        if (localStorage)
+            for (let code of localStorage.match(matchCode)) {
+                storage.push(code)
+                buffer.push(getCharacter(code))
+            }
+        else refreshStorage()
+
+        function setCharacter (bools) {
+            const alpha = sizeColumns / sizeRows
+            const tick = 32
+            
+            bools.forEach((row, i) => {
+                const time = tick * i * alpha
+
+                setTimeout(() => {
+                    row.forEach((bool, j) => {
+                        const index = sizeColumns * i + j
+                        const time = tick * j / alpha
+
+                        setTimeout(() => {
+                            character[index] = !character[index]
+
+                            setTimeout(() => character[index] = bool, tick)
+                        }, time)
+                    })
+                }, time)
+            })
+        }
+
+        function press (index) {
             let doHold = false
 
             const hold = setTimeout(() => doHold = true, 450)
@@ -165,17 +171,22 @@ const XAR_app = {
             const release = () => {
                 clearTimeout(hold)
                 window.removeEventListener("mouseup", release)
-                window.removeEventListener("mousemove", release)
 
                 if (doHold) deleteCharacter(index)
-                else setCharacter(getBools(storage[index]))
+                else setCharacter(parseCode(storage[index]))
             }
-            window.addEventListener("mouseup", release)
-            window.addEventListener("mousemove", release)
+          window.addEventListener("mouseup", release)
         }
+        
+        const styleScope = computed(() => {
+            return {
+                "--size-columns": sizeColumns,
+                "--size-rows": sizeRows,
+            }
+        })
 
         return {
-            character, characterDisplay, draw, select, displayCode, storage, storeCharacter, getBools, bits2url, clear
+            styleScope, character, draw, hexCode, selectText, clear, buffer, storeCharacter, press
         }
     }
 }

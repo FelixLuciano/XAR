@@ -52,8 +52,8 @@ main > section:first-child {
 main > section:first-child > article {
     display: grid;
     grid-gap: 1px;
-    grid-template-columns: repeat(var(--columns), 2rem);
-    grid-template-rows: repeat(var(--rows), 2rem);
+    grid-template-columns: repeat(var(--size-columns), 2rem);
+    grid-template-rows: repeat(var(--size-rows), 2rem);
 }
 main > section:first-child > article:hover input[type='checkbox']:not(:checked),
 main > section:first-child > article:active input[type='checkbox']:not(:checked) {
@@ -66,6 +66,7 @@ main > section:first-child > article:active input[type='checkbox']:not(:checked)
         background-color: #6B2;
         -webkit-appearance: none;
         -mox-appearance: none;
+        transition: background-color 80ms;
     }
     input[type='checkbox']:checked {
         background-color: #351;
@@ -77,6 +78,7 @@ main > section:first-child > article:active input[type='checkbox']:not(:checked)
 
 span {
     font-family: "consolas", monospace;
+    cursor: text;
 }
 
 main > section:nth-child(2) {
@@ -92,8 +94,8 @@ main > section:nth-child(2) > h1 {
 
 main > section:nth-child(2) > section {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 5rem);
-    grid-template-rows: repeat(auto-fill, 8rem);
+    grid-template-columns: repeat(auto-fill, calc(1rem * var(--size-columns)));
+    grid-template-rows: repeat(auto-fill, calc(1rem * var(--size-rows)));
     grid-gap: 1rem;
 }
 

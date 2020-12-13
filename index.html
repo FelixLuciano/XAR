@@ -2,7 +2,7 @@
 
 <html lang="en" >
 <head>
-    <title>XAR - Custom LCD Character</title>
+    <title>XAR - Custom LCD Characters</title>
     
     <meta name="Description" content="Custom LCD Character">
     <meta charset="UTF-8">
@@ -14,37 +14,27 @@
     <link rel="stylesheet" href="./style.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.global.prod.js" integrity="sha512-M8VjsuCj1iBzrwKloFNjvQBmFXT2oF0MWExoLGpQT2nEx5tq7CP+BhWGJdczT1LoWAhyqHh+LJ6ihHSVGyclHw==" crossorigin="anonymous"></script>
-
 </head>
 <body>
-
     <main id="app">
-        <section>
-            <article :style="characterDisplay">
-                <template v-for="dot, i in character">
-                    <input type="checkbox" v-model="character[i]" @pointerdown="draw">
-                </template>
+        <section :style="styleScope">
+            <article>
+                <input v-for="dot, i in character" v-model="character[i]" @pointerdown="draw" type="checkbox">
             </article>
 
-            <span v-text="displayCode" title="Character Hexadecimal code (Click to select)" @click="selectText"></span>
+            <span v-text="hexCode" title="Character Hexadecimal code (Click to select)" @click="selectText"></span>
 
             <button @click="clear">Clear</button>
         </section>
         
-        <section>
-            <h1>
-                MY CHARACTERS
-            </h1>
+        <section :style="styleScope">
+            <h1>MY CHARACTERS</h1>
             <section>
-                <button title="Store character" @click="storeCharacter">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
-                    </svg>
-                </button>
+                <button title="Store character" @click="storeCharacter"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
 
-                <template v-for="character, i in storage">
-                    <button :title="`Select character ${i + 1}`" @mousedown="select(i)">
-                        <img :src="bits2url(getBools(character))" alt="`Character ${i + 1}`">
+                <template v-for="character, i in buffer">
+                    <button :title="`Select character #${i + 1}`" @mousedown="press(i)" :key="buffer.length - i">
+                        <img :src="character" :alt="`Character #${i + 1}`">
                     </button>
                 </template>
             </section>
@@ -60,6 +50,5 @@
     </footer>
 
     <script src="./app.js"></script>
-
 </body>
 </html>
