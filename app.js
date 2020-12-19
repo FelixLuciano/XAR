@@ -1,6 +1,6 @@
-"use strict"
+import { createApp, reactive, computed } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.esm-browser.prod.js"
 
-const { ref, reactive, computed, toRaw } = Vue
+const sleep = time => new Promise(resolve => setTimeout(resolve, time))
 
 const XAR_app = {
     setup() {
@@ -139,7 +139,7 @@ const XAR_app = {
         const deleteCharacter = i  => storage.splice(i, 1) && buffer.splice(i, 1) && refreshStorage()
 
         const localStorage = window.localStorage.getItem(storage_name)
-        console.log(window.localStorage)
+        
         if (localStorage)
             for (let code of localStorage.match(matchCode)) {
                 storage.push(code)
@@ -151,21 +151,20 @@ const XAR_app = {
             const alpha = sizeColumns / sizeRows
             const tick = 32
 
-            bools.forEach((row, i) => {
+            bools.forEach(async (row, i) => {
                 const time = tick * i * alpha
 
-                setTimeout(() => {
-                    row.forEach((bool, j) => {
-                        const index = sizeColumns * i + j
-                        const time = tick * j / alpha
+                await sleep(time)
 
-                        setTimeout(() => {
-                            character[index] = !character[index]
+                row.forEach(async (bool, j) => {
+                    const index = sizeColumns * i + j
+                    const time = tick * j / alpha
 
-                            setTimeout(() => character[index] = bool, tick)
-                        }, time)
-                    })
-                }, time)
+                    await sleep(time)
+                    character[index] = !bool
+                    await sleep(tick)
+                    character[index] = bool
+                })
             })
         }
 
@@ -186,7 +185,8 @@ const XAR_app = {
 
         const styleScope = computed(() => {
             return {
-                "--size-columns": sizeColumns, "--size-rows": sizeRows
+                "--size-columns": sizeColumns,
+                "--size-rows": sizeRows
             }
         })
 
@@ -204,4 +204,4 @@ const XAR_app = {
     }
 }
 
-Vue.createApp(XAR_app).mount("#app")
+createApp(XAR_app).mount("#app")

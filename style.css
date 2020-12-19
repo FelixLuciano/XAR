@@ -51,8 +51,9 @@ main > section:first-child {
 main > section:first-child > article {
     display: grid;
     grid-gap: 1px;
-    grid-template-columns: repeat(var(--size-columns), 2.5rem);
-    grid-template-rows: repeat(var(--size-rows), 2.5rem);
+    grid-template-columns: repeat(var(--size-columns), 2rem);
+    grid-template-rows: repeat(var(--size-rows), 2rem);
+    user-select: none;
 }
 main > section:first-child > article:hover input[type='checkbox']:not(:checked),
 main > section:first-child > article:active input[type='checkbox']:not(:checked) {
@@ -111,10 +112,11 @@ main > section:nth-child(2) > h1 {
 }
 
 main > section:nth-child(2) > section {
+    --alpha: calc(var(--size-rows) / var(--size-columns));
     padding: 0 6rem;
     display: grid;
-    grid-template-columns: repeat(auto-fill, calc(1rem * var(--size-columns)));
-    grid-template-rows: repeat(auto-fill, calc(1rem * var(--size-rows)));
+    grid-template-columns: repeat(auto-fill, 5rem);
+    grid-template-rows: repeat(auto-fill, calc(5rem * var(--alpha, 1)));
     grid-gap: 1rem;
 }
 
@@ -131,8 +133,10 @@ main > section:nth-child(2) > section > button:hover {
 }
 
 main > section:nth-child(2) > section > button > svg {
-    width: 3rem;
-    height: 3rem;
+    width: 100%;
+    height: 100%;
+    max-width: 3rem;
+    max-height: 3rem;
     fill: currentColor;
 }
 
