@@ -76,7 +76,7 @@ main > section:first-child > article:active input[type='checkbox']:not(:checked)
     }
 }
 
-span {
+main > section:first-child > span {
     font-family: "consolas", monospace;
     cursor: text;
 }
@@ -154,7 +154,6 @@ body > footer {
     font-size: .8em;
     line-height: 3rem;
     align-self: end;
-    /* background-color: yellow; */
 }
 @media (max-width: 25rem) {
     body > footer span {
