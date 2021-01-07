@@ -29,16 +29,16 @@ const XAR_app = {
             const state = !dot.checked
             const dots_tree = dot.parentNode.children
             const dots = [...dots_tree]
-            const index = dots.indexOf(dot)
+            let index = dots.indexOf(dot)
 
             const startDrawing = () => {
                 character[index] = state
-                dot.removeEventListener("pointerleave", startDrawing)
-                dots.forEach((dot) => dot.addEventListener("pointerenter", drawing))
+
+                dots.forEach(dot => dot.addEventListener("pointerenter", drawing))
             }
 
             const drawing = ({ target: dot }) => {
-                const index = dots.indexOf(dot)
+                index = dots.indexOf(dot)
 
                 character[index] = state
                 dot.focus()
@@ -46,12 +46,11 @@ const XAR_app = {
 
             const endDrawing = () => {
                 dot.removeEventListener("pointerleave", startDrawing)
-                dots.forEach((dot) => dot.removeEventListener("pointerenter", drawing))
-                window.removeEventListener("pointerup", endDrawing)
+                dots.forEach(dot => dot.removeEventListener("pointerenter", drawing))
             }
 
-            dot.addEventListener("pointerleave", startDrawing)
-            window.addEventListener("pointerup", endDrawing)
+            dot.addEventListener("pointerleave", startDrawing, { once: true })
+            window.addEventListener("pointerup", endDrawing, { once: true })
         }
 
         function clear() {
@@ -173,14 +172,12 @@ const XAR_app = {
 
             const hold = setTimeout(() => doHold = true, 450)
 
-            const release = () => {
+            window.addEventListener("mouseup", () => {
                 clearTimeout(hold)
-                window.removeEventListener("mouseup", release)
 
                 if (doHold) deleteCharacter(index)
                 else setCharacter(parseCode(storage[index]))
-            }
-            window.addEventListener("mouseup", release)
+            }, { once: true })
         }
 
         const styleScope = computed(() => {
