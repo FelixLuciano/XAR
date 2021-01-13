@@ -15,7 +15,7 @@
 <body>
     <main id="app">
         <section :style="styleScope">
-            <article>
+            <article ref="dotsNode">
                 <input v-for="dot, i in character" v-model="character[i]" @pointerdown="draw" type="checkbox">
             </article>
             <span v-text="hexCode" title="Character Hexadecimal code (Click to select)" @click="selectText"></span>

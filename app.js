@@ -1,4 +1,4 @@
-import { createApp, reactive, computed } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.esm-browser.prod.js"
+import { createApp, ref, reactive, computed } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.esm-browser.prod.js"
 
 const sleep = time => new Promise(resolve => setTimeout(resolve, time))
 
@@ -25,22 +25,28 @@ const XAR_app = {
             return binaries
         })
 
+        function toggle (index, value) {
+            character[index] = value || !character[index]
+        }
+
+        const dotsNode = ref(null)
+
         function draw({ target: dot }) {
             const state = !dot.checked
-            const dots_tree = dot.parentNode.children
+            const dots_tree = dotsNode.value.children
             const dots = [...dots_tree]
             let index = dots.indexOf(dot)
 
             const startDrawing = () => {
-                character[index] = state
-
+                toggle(index, state)
                 dots.forEach(dot => dot.addEventListener("pointerenter", drawing))
             }
 
             const drawing = ({ target: dot }) => {
                 index = dots.indexOf(dot)
 
-                character[index] = state
+                toggle(index, state)
+                registerStep(index)
                 dot.focus()
             }
 
@@ -49,6 +55,7 @@ const XAR_app = {
                 dots.forEach(dot => dot.removeEventListener("pointerenter", drawing))
             }
 
+            registerStep(index)
             dot.addEventListener("pointerleave", startDrawing, { once: true })
             window.addEventListener("pointerup", endDrawing, { once: true })
         }
@@ -59,7 +66,54 @@ const XAR_app = {
             )
 
             setCharacter(cleanCharacter)
+            clearHistory()
         }
+
+        const undoHistory = []
+        function registerStep(step) {
+            undoHistory.push(step)
+            if (undoHistory.length > size) undoHistory.shift()
+            if (redoHistory) redoHistory.length = 0
+        }
+        function undo() {
+            const step = undoHistory.pop()
+
+            if (!step) return
+            console.log()
+
+            redoHistory.push(step)
+            toggle(step)
+            dotsNode.value.children[step].focus()
+        }
+        function undoAll() {
+            for (let step of undoHistory) undo()
+        }
+
+        const redoHistory = []
+        function redo() {
+            const step = redoHistory.pop()
+
+            if (!step) return
+
+            undoHistory.push(step)
+            toggle(step)
+            dotsNode.value.children[step].focus()
+        }
+        function redoAll() {
+            for (let step of undoHistory) redo()
+        }
+
+        function clearHistory () {
+            undoHistory.length = 0
+            redoHistory.length = 0
+        }
+
+        document.addEventListener("keydown", ({ ctrlKey, key, altKey }) => {
+            if (ctrlKey) switch (key) {
+                case "z": return !altKey ? undo() : undoAll()
+                case "y": return !altKey ? redo() : redoAll()
+            }
+        })
 
         const base = 16
         const bitRange = 2 ** sizeColumns
@@ -160,11 +214,13 @@ const XAR_app = {
                     const time = tick * j / alpha
 
                     await sleep(time)
-                    character[index] = !bool
+                    toggle(index, !bool)
                     await sleep(tick)
-                    character[index] = bool
+                    toggle(index, bool)
                 })
             })
+
+            clearHistory()
         }
 
         function press(index) {
@@ -188,6 +244,7 @@ const XAR_app = {
         })
 
         return {
+            dotsNode,
             styleScope,
             character,
             draw,
