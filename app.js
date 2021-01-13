@@ -79,10 +79,9 @@ const XAR_app = {
             const step = undoHistory.pop()
 
             if (!step) return
-            console.log()
 
-            redoHistory.push(step)
             toggle(step)
+            redoHistory.push(step)
             dotsNode.value.children[step].focus()
         }
         function undoAll() {
@@ -95,8 +94,8 @@ const XAR_app = {
 
             if (!step) return
 
-            undoHistory.push(step)
             toggle(step)
+            undoHistory.push(step)
             dotsNode.value.children[step].focus()
         }
         function redoAll() {
