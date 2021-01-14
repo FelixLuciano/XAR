@@ -25,12 +25,11 @@ const XAR_app = {
             return binaries
         })
 
-        function toggle (index, value) {
-            character[index] = value || !character[index]
-        }
-
         const dotsNode = ref(null)
 
+        function toggle(index, value) {
+            character[index] = value || !character[index]
+        }
         function draw({ target: dot }) {
             const state = !dot.checked
             const dots_tree = dotsNode.value.children
@@ -41,7 +40,6 @@ const XAR_app = {
                 toggle(index, state)
                 dots.forEach(dot => dot.addEventListener("pointerenter", drawing))
             }
-
             const drawing = ({ target: dot }) => {
                 index = dots.indexOf(dot)
 
@@ -49,7 +47,6 @@ const XAR_app = {
                 registerStep(index)
                 dot.focus()
             }
-
             const endDrawing = () => {
                 dot.removeEventListener("pointerleave", startDrawing)
                 dots.forEach(dot => dot.removeEventListener("pointerenter", drawing))
@@ -59,14 +56,35 @@ const XAR_app = {
             dot.addEventListener("pointerleave", startDrawing, { once: true })
             window.addEventListener("pointerup", endDrawing, { once: true })
         }
+        function setCharacter(bools, doHistory = true) {
+            const alpha = sizeColumns / sizeRows
+            const tick = 32
 
+            if (doHistory) registerStep(characterCode.value)
+
+            bools.forEach(async (row, i) => {
+                const time = tick * i * alpha
+
+                await sleep(time)
+
+                row.forEach(async (bool, j) => {
+                    const index = sizeColumns * i + j
+                    const time = tick * j / alpha
+
+                    await sleep(time)
+                    toggle(index, !bool)
+                    await sleep(tick)
+                    toggle(index, bool)
+                })
+            })
+        }
         function clear() {
             const cleanCharacter = new Array(sizeRows).fill(
                 new Array(sizeColumns).fill(false)
             )
 
-            setCharacter(cleanCharacter)
-            clearHistory()
+            registerStep(characterCode.value)
+            setCharacter(cleanCharacter, false)
         }
 
         const undoHistory = []
@@ -80,12 +98,15 @@ const XAR_app = {
 
             if (!step) return
 
-            toggle(step)
-            redoHistory.push(step)
-            dotsNode.value.children[step].focus()
-        }
-        function undoAll() {
-            for (let step of undoHistory) undo()
+            if (typeof step === "number") {
+                toggle(step)
+                dotsNode.value.children[step].focus()
+                redoHistory.push(step)
+            }
+            else if (typeof step === "string") {
+                redoHistory.push(characterCode.value)
+                setCharacter(parseCode(step), false)
+            }
         }
 
         const redoHistory = []
@@ -94,23 +115,21 @@ const XAR_app = {
 
             if (!step) return
 
-            toggle(step)
+            if (typeof step === "number") {
+                toggle(step)
+                dotsNode.value.children[step].focus()
+            }
+            else if (typeof step === "string")
+                undoHistory.push(characterCode.value)
+                setCharacter(parseCode(step), false)
+
             undoHistory.push(step)
-            dotsNode.value.children[step].focus()
-        }
-        function redoAll() {
-            for (let step of undoHistory) redo()
         }
 
-        function clearHistory () {
-            undoHistory.length = 0
-            redoHistory.length = 0
-        }
-
-        document.addEventListener("keydown", ({ ctrlKey, key, altKey }) => {
-            if (ctrlKey) switch (key) {
-                case "z": return !altKey ? undo() : undoAll()
-                case "y": return !altKey ? redo() : redoAll()
+        document.addEventListener("keydown", ({ ctrlKey, key }) => {
+            if (ctrlKey) {
+                if (key === "z") undo()
+                else if (key === "y") redo()
             }
         })
 
@@ -120,10 +139,10 @@ const XAR_app = {
 
         const hexCode = computed(() => {
             return binaries.value
-            .map((bin) =>
-                "0x" + bin.toString(16).toUpperCase().padStart(hexLength, "0")
-            )
-            .join(", ")
+                .map((bin) =>
+                    "0x" + bin.toString(16).toUpperCase().padStart(hexLength, "0")
+                )
+                .join(", ")
         })
 
         function selectText({ target }) {
@@ -138,10 +157,10 @@ const XAR_app = {
 
         const characterCode = computed(() => {
             return binaries.value
-            .map((bin) =>
-                bin.toString(codeBase).toUpperCase().padStart(codeLength, "0")
-            )
-            .join("")
+                .map((bin) =>
+                    bin.toString(codeBase).toUpperCase().padStart(codeLength, "0")
+                )
+                .join("")
         })
 
         function parseCode(code) {
@@ -181,46 +200,20 @@ const XAR_app = {
         }
 
         const characterImg = computed(() => getCharacter(characterCode.value))
-
         const storage = reactive([])
         const buffer = reactive([])
-
         const storage_name    = `XAR_${sizeColumns}x${sizeRows}`
         const refreshStorage  = () => window.localStorage.setItem(storage_name, storage.join(""))
         const storeCharacter  = () => storage.unshift(characterCode.value) && buffer.unshift(characterImg.value) && refreshStorage()
         const deleteCharacter = i  => storage.splice(i, 1) && buffer.splice(i, 1) && refreshStorage()
 
         const localStorage = window.localStorage.getItem(storage_name)
-        
         if (localStorage)
             for (let code of localStorage.match(matchCode)) {
                 storage.push(code)
                 buffer.push(getCharacter(code))
             }
         else refreshStorage()
-
-        function setCharacter(bools) {
-            const alpha = sizeColumns / sizeRows
-            const tick = 32
-
-            bools.forEach(async (row, i) => {
-                const time = tick * i * alpha
-
-                await sleep(time)
-
-                row.forEach(async (bool, j) => {
-                    const index = sizeColumns * i + j
-                    const time = tick * j / alpha
-
-                    await sleep(time)
-                    toggle(index, !bool)
-                    await sleep(tick)
-                    toggle(index, bool)
-                })
-            })
-
-            clearHistory()
-        }
 
         function press(index) {
             let doHold = false
