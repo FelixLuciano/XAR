@@ -118,12 +118,12 @@ const XAR_app = {
             if (typeof step === "number") {
                 toggle(step)
                 dotsNode.value.children[step].focus()
+                undoHistory.push(step)
             }
-            else if (typeof step === "string")
+            else if (typeof step === "string") {
                 undoHistory.push(characterCode.value)
                 setCharacter(parseCode(step), false)
-
-            undoHistory.push(step)
+            }
         }
 
         document.addEventListener("keydown", ({ ctrlKey, key }) => {
