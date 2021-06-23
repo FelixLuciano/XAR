@@ -1,0 +1,197 @@
+:root {
+    --back: #EFD;
+    --fore: #8D2;
+    --text: #351;
+    --soft: #CDB;
+    --hard: #AC6;
+    --warn: #F62;
+    background-color: var(--back);
+    color: var(--text);
+    font-size: 16px;
+    font-family: 'Manrope', sans-serif;
+}
+
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-rows: minmax(calc(100vh - 3rem), auto) 3rem;
+    place-items: center;
+    cursor: default;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+::selection {
+background-color: var(--text);
+color: var(--fore);
+}
+::-moz-selection {
+    background-color: var(--text);
+    color: var(--fore);
+}
+
+a,
+a:active,
+a:visited {
+  color: currentColor;
+}
+  
+main {
+    width: 100%;
+    max-width: 128rem;
+    height: 100%;
+    min-height: 42rem;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 36rem minmax(39rem, auto);
+    grid-template-rows: 100%;
+    gap: 1rem;
+    place-items: center;
+    overflow-x: auto;
+}
+@media (max-width: 36rem) {
+    main {
+        grid-template-columns: max(24rem, calc(100vw - 2rem)) clamp(90vw, 28rem, 48rem);
+    }
+}
+
+#caracter-panel {
+    display: grid;
+    place-items: center;
+    place-content: center;
+    grid-gap: 2rem;
+}
+
+#catacter-dots-panel {
+    padding: 3rem;
+    background-color: var(--fore);
+    display: grid;
+    grid-gap: .125rem;
+    grid-template-columns: repeat(var(--size-columns), 3rem);
+    grid-template-rows: repeat(var(--size-rows), 3rem);
+}
+#catacter-dots-panel:hover .character-dot-input:not(:checked),
+#catacter-dots-panel:active .character-dot-input:not(:checked) {
+    background-color: #6A2;
+}
+
+.character-dot-input {
+    margin: 0;
+    
+}
+@supports (-webkit-appearance: none) or (-moz-appearance: none) {
+    .character-dot-input {
+        background-color: #6B2;
+        -webkit-appearance: none;
+        -mox-appearance: none;
+        transition: background-color 80ms;
+    }
+    .character-dot-input:checked {
+        background-color: #351;
+    }
+    .character-dot-input:focus {
+        z-index: 100;
+    }
+}
+
+#character-code {
+    font-family: "consolas", monospace;
+    cursor: text;
+}
+
+#clear-button {
+    width: 7.5rem;
+    height: 2.5rem;
+    border: none;
+    background-color: var(--soft);
+    font-size: inherit;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-weight: bold;
+}
+
+#clear-button:hover,
+#clear-button:active {
+    background-color: var(--warn);
+}
+
+#side-panel-container {
+    width: 100%;
+    height: 100%;
+    max-height: calc(100vh - 7rem);
+    padding: 0 1rem;
+    overflow-y: auto;
+}
+
+#side-panel-title {
+    padding-bottom: 1rem;
+    font-size: 2.5em;
+    background-color: var(--back);
+    margin: 0;
+    position: sticky;
+    top: 0;
+}
+
+#side-panel-section {
+    --size: 8rem;
+    --alpha: calc(var(--size-rows) / var(--size-columns));
+    display: grid;
+    grid-template-columns: repeat(auto-fill, var(--size));
+    grid-template-rows: repeat(auto-fill, calc(var(--size) * var(--alpha, 1)));
+    grid-gap: 1rem;
+}
+
+.side-panel-button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: inherit;
+}
+.side-panel-button:hover {
+    background-color: var(--fore);
+}
+
+.side-panel-icon {
+    width: 100%;
+    height: 100%;
+    max-width: 3rem;
+    max-height: 3rem;
+    fill: currentColor;
+}
+
+#side-panel-add {
+    background-color: var(--soft);
+}
+#side-panel-add:hover {
+    background-color: var(--hard);
+}
+
+.side-panel-character {
+    width: 100%;
+    max-width: 100%;
+    image-rendering: pixelated;
+    display: block;
+}
+
+
+#page-footer {
+    width: 100%;
+    padding: 0 1rem;
+    background-color: var(--soft);
+    font-size: .8em;
+    line-height: 3rem;
+    align-self: end;
+}
+@media (max-width: 25rem) {
+    #page-footer span {
+        display: none;
+    }
+}
