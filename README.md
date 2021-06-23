@@ -8,7 +8,7 @@ Custom LCD Characters designer
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-// Custom character binarys (Put your code in the brackets)
+// Custom character binaries (Put your code in the brackets)
 const char hearth[8] PROGMEM = {0x00, 0x0A, 0x1F, 0x1F, 0x0E, 0x04, 0x00, 0x00};
 
 void setup()
