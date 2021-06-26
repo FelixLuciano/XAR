@@ -1,9 +1,13 @@
-<center>
-<img src="./assets/icons/icon.svg" width="200" alt="XAR logo">
-</center>
+<p align="center">
+    <a href="https://lucianofelix.com.br/XAR" target="_blank" rel="noopener noreferrer">
+        <img src="./assets/icons/icon.svg" width="200" alt="XAR logo">
+    </a>
+</p>
 
-# XAR
-Custom LCD Characters designer
+<h1 align="center">XAR</h1>
+<p align="center">
+    Custom LCD Characters editor
+</p>
 
 
 ## The app
