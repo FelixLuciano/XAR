@@ -1,0 +1,47 @@
+{
+	"name": "XAR",
+	"short_name": "XAR",
+	"description": "Custom LCD Characters editor",
+	"start_url": "https://lucianofelix.com.br/XAR/",
+	"categories": [
+		"utilities",
+		"tools",
+		"development"
+	],
+	"lang": "en-US",
+	"dir": "ltr",
+	"theme_color": "#EEFFCC",
+	"background_color": "#EEFFCC",
+	"display": "standalone",
+	"orientation": "any",
+	"icons": [
+		{
+			"src": "./assets/icons/icon-maskable-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "maskable"
+		}, {
+			"src": "./assets/icons/icon-maskable-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}, {
+			"src": "./assets/icons/icon-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any"
+		}, {
+			"src": "./assets/icons/icon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "./assets/screenshots/app-desktop.webp",
+			"sizes": "1280x720",
+			"type": "image/webp"
+		}
+	]
+}

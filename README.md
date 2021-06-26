@@ -12,7 +12,7 @@
 
 ## The app
 
-![XAR app desktop](./assets/screenshots/app-desktop2.png)
+![XAR app desktop](./assets/screenshots/app-desktop.webp)
 
 Access at [LucianoFelix.com.br/XAR](https://lucianofelix.com.br/XAR/)
 
