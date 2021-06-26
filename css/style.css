@@ -231,6 +231,7 @@ footer {
 	list-style: none;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, clamp(4rem, 5vw, 9rem));
+	grid-template-rows: 0fr;
 	grid-gap: var(--spacing);
 }
 
