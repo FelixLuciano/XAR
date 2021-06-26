@@ -5,9 +5,9 @@ const defaults = {
 	decode: undefined
 }
 
-class Storage {
+export default class Storage {
 	constructor(config) {
-		this.config = Object.assign(defaults, config)
+		this.config = {...defaults, ...config}
 		this.buffer = undefined
 
 		this.updateLegacy()
@@ -41,6 +41,7 @@ class Storage {
 
 	save() {
 		const toStore = this.config.encode(this.buffer)
+		
 		window.localStorage.setItem(this.config.name, toStore)
 	}
 
@@ -54,5 +55,3 @@ class Storage {
 		this.buffer = data
 	}
 }
-
-export default Storage

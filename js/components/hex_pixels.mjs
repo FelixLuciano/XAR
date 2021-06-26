@@ -1,111 +1,96 @@
-class HexPixels {
-    constructor(width, height, proxy, base=16) {
+import Encoder from "./encoder.mjs"
+import Observer from "./observer.mjs"
+import Binaries from "./binaries.mjs"
+
+
+export default class HexPixels extends Observer {
+    constructor(width, height, bufferProxy) {
+        super()
+        
         this.width = width
         this.height = height
-        this.size = width * height
-        this.base = base
+        this.encoder = new Encoder(36, width)
 
-        const buffer = new Array(this.size).fill(false)
-        this.buffer = proxy ? proxy(buffer) : buffer
-    }
-
-    get displayCode() {
-        return this.encode(this.buffer, this.base, "<small>0x</small><strong>", "</strong>", ", ")
-    }
-
-    get code() {
-        return this.encode(this.buffer)
-    }
-
-    set code(code) {
-        const buffer = this.parse(code)
-
-        this.setPixels(buffer)
+        const buffer = new Array(width * height).fill(false)
+        this.buffer = bufferProxy ? bufferProxy(buffer) : buffer
     }
 
     get binaries() {
-        return this.getBinaries()
+        return Binaries.getChunks(this.buffer, this.width)
+    }
+    set binaries(binaries) {
+        const buffer = Binaries.toBooleans(binaries, this.width)
+
+        let i = 0
+        for (let dotValue of buffer) {
+            this.buffer[i] = dotValue
+            i++
+        }
+    }
+    setBinaries(binaries, tick = 32, isSilent = false) {
+        const buffer = Binaries.toBooleans(binaries, this.width)
+        const alpha = this.height / this.width
+
+        return new Promise(resolve => {
+            let i = 0
+            for (let dotValue of buffer) {
+                const x = i % this.width
+                const y = Math.floor(i / this.width)
+                const delay = tick * (x * alpha + y / alpha)
+
+                setTimeout(i => this.buffer[i] = !this.buffer[i], delay, i)
+                setTimeout(i => this.buffer[i] = dotValue, tick + delay, i)
+
+                if (i === this.width * this.height - 1)
+                    setTimeout(() => {
+                        resolve()
+
+                        if (!isSilent)
+                            this.emit("change")
+                    }, tick + delay, this)
+                i++
+            }
+        })
+    }
+
+
+    get code() {
+        return this.encoder.encode(this.binaries)
+    }
+    set code(code) {
+        this.binaries = this.encoder.parse(code)
+    }
+    async setCode(code, isSilent = false) {
+        await this.setBinaries(this.encoder.parse(code), 32, isSilent)
     }
 
     get pixels() {
         const currentcolor = getComputedStyle(document.documentElement).getPropertyValue("color")
 
-        return this.getPixels(this.buffer, currentcolor)
+        return this.getPixels(this.binaries, currentcolor)
     }
 
-    setPixels (buffer) {
-        const alpha = this.width / this.height
-        const tick = 32
+    toggleDot(index, value, isSilent = false) {
+        const newValue = value || !this.buffer[index]
+        const oldValue = this.buffer[index]
 
-        for (let i = 0; i < buffer.length; i++) {
-            const column = i % this.width
-            const row = Math.floor(i / this.width)
-            
-            const delay = tick * (row * alpha + column / alpha)
+        this.buffer[index] = newValue
 
-            setTimeout(() => {
-                this.buffer[i] = !this.buffer[i]
-
-                setTimeout(() => {
-                    this.buffer[i] = buffer[i]
-                }, tick)
-            }, delay)
-        }
+        if (!isSilent && oldValue !== newValue)
+            this.emit("input")
     }
 
-    getBinaries(buffer = this.buffer) {
-        const binaries = []
-    
-        for (let i = 0; i < this.size; i += this.width) {
-            const bools = buffer.slice(i, i + this.width)
-            const bits = bools.join("").replaceAll("true", "1").replaceAll("false", "0")
-            const bin = parseInt(bits, 2)
-    
-            binaries.push(bin)
-        }
-    
-        return binaries
+    async clear(isSilent = false) {
+        const binaries = new Array(this.height).fill(0)
+
+        await this.setBinaries(binaries, 32, true)
+
+        if (!isSilent)
+            this.emit("clear")
     }
 
-    encode(buffer=this.buffer, codeBase=36, prefix="", sufix="", separator="") {
-        const range = 2 ** this.width
-        const base = Math.min(range, codeBase)
-        const padLength = Math.ceil(Math.log(range) / Math.log(base))
-
-        const code = this.getBinaries(buffer)
-            .map((binnarie) => {
-                const encoded = binnarie.toString(base).toUpperCase().padStart(padLength, "0")
-
-                return prefix + encoded + sufix
-            })
-            .join(separator)
-
-        return code
-    }
-
-    parse(code) {
-        const bitRange = 2 ** this.width
-        const base = Math.min(bitRange, 36)
-        const padLength = Math.ceil(Math.log(bitRange) / Math.log(base))
-        const matchCodeBit = new RegExp(`.{${padLength}}`, "g")
-        const matches = code.match(matchCodeBit)
-
-        const boools = []
-        
-        for (let chunck of matches) {
-            const bin = parseInt(chunck, base)
-            const bits = bin.toString(2).padStart(this.width, "0")
-            
-            for (let bit of bits) {
-                const bool = bit == "1" ? true : false
-                boools.push(bool)
-            }
-        }
-
-        return boools
-    }
-
-    getPixels(buffer=this.buffer, fill="#000") {
+    getPixels(binaries=this.binaries, fill="#000") {
+        const buffer = Binaries.toBooleans(binaries, this.width)
         const canvas = document.createElement("canvas")
         const ctx = canvas.getContext("2d")
 
@@ -113,17 +98,17 @@ class HexPixels {
         canvas.height = this.height
         ctx.fillStyle = fill
 
-        for (let i = 0; i < this.size; i++) {
-            if (buffer[i]) {
-                const x = i % this.width
-                const y = Math.floor(i / this.width)
+        let i = 0
+        for (let dot of buffer) {
+            if (dot) {
+                const x = i % canvas.width
+                const y = Math.floor(i / canvas.width)
 
                 ctx.fillRect(x, y, 1, 1)
             }
+            i++
         }
 
         return canvas.toDataURL()
     }
 }
-
-export default HexPixels

@@ -8,83 +8,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="apple-mobile-web-app-title" content="XAR">
     <meta name="application-name" content="XAR">
-    <link async rel="icon" type="image/png" sizes="256x256" href="./icons/icon-256x256.png">
-    <link async rel="shortcut icon" href="./icons/favicon.ico">
-    <link async rel="preconnect stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap">
+    <link async rel="icon" type="image/svg" sizes="500x500" href="./icons/icon.svg">
+	<meta name="theme-color" content="#EEFFCC">
+    <link async rel="preconnect stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
     <main id="app">
         <section
-            id="caracter-panel"
-            :style="styleScope"
+            id="editor-section"
         >
-            <div
-                id="catacter-dots-panel"
-                ref="dotsNode"
-            >
-                <input
-                    class="character-dot-input"
-                    v-for="dot, i in character.buffer"
-                    v-model="character.buffer[i]"
-                    @change="recordStep"
-                    @mousedown="draw"
-                    type="checkbox"
-                >
+            <div id="catacter-editor-container">
+                <template v-for="dot, i in character.buffer">
+                    <input
+                        class="character-dot"
+                        v-model="character.buffer[i]"
+                        @change="history.recordStep()"
+                        @mousedown="character.drawing.dispatch($event)"
+                        type="checkbox"
+                    >
+                </template>
             </div>
 
-            <span
-                id="character-code"
-                onclick="getSelection().selectAllChildren(this)"
-                v-html="character.displayCode"
+            <div
+                class="font-mono text nowrap"
+                @click="selectText($event)"
+                v-html="character.displayCode.value"
                 title="Character Hexadecimal code (Click to select)"
-            ></span>
+            >...</div>
 
             <button 
-                id="clear-button"
-                @click="clear"
+                class="inline font-mono button warnfull"
+                @click="character.clear()"
             >Clear</button>
         </section>
 
-        <section
-            id="side-panel-container"
-            :style="styleScope"
-        >
-            <h1 id="side-panel-title">MY CHARACTERS</h1>
+        <section id="collection-section">
+            <h1
+                id="collection-section-name"
+                class="w-full truncate text sticky-header"
+                @focus="selectText($event)"
+                @input="collection.inputName"
+                @keypress.enter="$event.target.blur()"
+                v-text="collection.displayName"
+                contenteditable="true"
+                spellcheck="false"
+            ></h1>
 
-            <section id="side-panel-section">
-                <button
-                    id="side-panel-add"
-                    class="side-panel-button"
-                    title="Store character" @click="store"
-                >
-                    <svg class="side-panel-icon" viewBox="0 0 24 24">
-                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
-                    </svg>
-                </button>
-                
-                <template v-for="character, i in storage.buffer">
+            <ul id="collection-list-container">
+                <li class="collection-list-item">
                     <button
-                        class="side-panel-button"
-                        @pointerdown="press(i)"
-                        :key="storage.length - i"
-                        :title="`Select character #${i + 1}`"
+                        class="w-full h-full button "
+                        title="Store character"
+                        @click="character.store"
                     >
-                        <img
-                            class="side-panel-character"
-                            :src="character.pixels"
-                            :alt="`Character #${i + 1}`"
-                        >
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                        </svg>
                     </button>
+                </li>
+                
+                <template v-for="character, i in collection.buffer">
+                    <li class="collection-list-item">
+                        <button
+                            class="w-full h-full button "
+                            @pointerdown="collection.press.dispatch(i)"
+                            :key="collection.length - i"
+                            :title="`Select character #${i + 1}`"
+                        >
+                            <img
+                                class="w-full h-full pixelated"
+                                :src="character.pixels"
+                                :alt="`Character #${i + 1}`"
+                            >
+                        </button>
+                    </li>
                 </template>
 
             </section>
         </section>
     </main>
 
-    <footer id="page-footer">
-        &copy; 2021 Luciano Felix<span>, all rights reserved</span>.
-        <a href="https://github.com/FelixLuciano/XAR#readme" target="_blank" rel="noopener"><span>See on </span>GitHub</a>
+    <footer>
+        &copy; 2021 Luciano Felix<span class="hidden-small">, all rights reserved</span>.
+        <a href="https://github.com/FelixLuciano/XAR#readme" target="_blank" rel="noopener"><span class="hidden-small">See on </span>GitHub</a>
     </footer>
 
     <script type="module" src="./js/app.js"></script>

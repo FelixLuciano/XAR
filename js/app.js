@@ -1,139 +1,125 @@
-import { createApp, ref, reactive, computed } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.1.1/vue.esm-browser.prod.js"
+import { createApp, reactive, computed } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.1.1/vue.esm-browser.prod.js"
 
 import HexPixels from "./components/hex_pixels.mjs"
 import Storage from "./components/storage.mjs"
 import History from "./components/history.mjs"
+import Encoder from "./components/encoder.mjs"
+import DrawingGesture from "./components/drawing_gesture.mjs"
+import PressGesture from "./components/press_gesture.mjs"
 
 
 const XAR_app = {
     setup() {
+        // Character
         const character = new HexPixels(5, 8, reactive)
-        const history = new History(character, "code")
-
-        function clear() {
-            const cleanCharacter = [...character.buffer].fill(false)
-
-            character.setPixels(cleanCharacter)
-            history.recordStep()
+        const codeEncoder = new Encoder(16, character.width, "<small>0x</small><strong>", "</strong>", ", ")
+        
+        character.introAnimation = async function() {
+            await character.setCode("DLI449LM", true)
+            await new Promise(resolve => setTimeout(resolve, 1024))
+            await character.clear(true)
         }
-
-
-        const dotsNode = ref(null)
-
-        function draw({ target: dot }) {
-            const state = !dot.checked
-            const dots_tree = dotsNode.value.children
-            const dots = [...dots_tree]
-            let index = dots.indexOf(dot)
-
-            const startDrawing = () => {
-                toggle(index, state)
-                dots.forEach(dot => dot.addEventListener("mouseenter", drawing))
-            }
-            const drawing = ({ target: dot }) => {
-                index = dots.indexOf(dot)
-
-                toggle(index, state)
-                dot.focus()
-            }
-            const endDrawing = () => {
-                dot.removeEventListener("mouseleave", startDrawing)
-                dots.forEach(dot => dot.removeEventListener("mouseenter", drawing))
-            }
-
-            dot.addEventListener("mouseleave", startDrawing, { once: true })
-            window.addEventListener("mouseup", endDrawing, { once: true })
-        }
-        function toggle(index, value) {
-            const newValue = value || !character.buffer[index]
-            const oldValue = character.buffer[index]
-
-            character.buffer[index] = newValue
-
-            if (oldValue !== newValue)
-                history.recordStep()
-        }
-
-        const currentcolor = getComputedStyle(document.documentElement).getPropertyValue("color")
-
-        const storage = new Storage({
-            name: "com.lucianofelix.xar-storage:5x8",
-            legacyNames: ["XAR_5x8"],
-            encode(buffer = []) {
-                let data = ""
-
-                for (let character of buffer)
-                    data += character.code
-
-                return data
-            },
-            decode(storedData) {
-                const buffer = []
-                const codeLength = character.code.length
-                const matchCode = new RegExp(`.{${codeLength}}`, "g")
-                const matches = storedData?.match(matchCode)
-
-                if (matches?.length) {
-                    for (let code of matches) {
-                        const pixels = character.getPixels(character.parse(code), currentcolor)
-
-                        buffer.push({
-                            code,
-                            pixels
-                        })
-                    }
-                }
-
-                return reactive(buffer)
-            }
+        character.displayCode = computed(() => {
+            return codeEncoder.encode(character.binaries)
         })
+        character.store = function() {
+            character.setBinaries(character.binaries, 32, true)
 
-        function press(index) {
-            let doHold = false
-
-            const hold = setTimeout(() => doHold = true, 450)
-
-            window.addEventListener("pointerup", (event) => {
-                clearTimeout(hold)
-
-                if (doHold) {
-                    event.preventDefault()
-                    storage.remove(index)
-                }
-                else {
-                    history.recordStep()
-                    character.setPixels(character.parse(storage.buffer[index].code))
-                }
-            }, { once: true })
-        }
-
-        function recordStep() {
-            return history.recordStep()
-        }
-        function store() {
-            storage.store({
+            collection.store({
                 code: character.code,
                 pixels: character.pixels
             })
         }
 
-        const styleScope = computed(() => {
-            return {
-                "--size-columns": character.width,
-                "--size-rows": character.height
+        character.drawing = new DrawingGesture()
+            .on("all", (index, value, type) => {
+                if (type !== "end")
+                    character.toggleDot(index, value)
+            })
+
+        document.documentElement.style.setProperty("--character-width", character.width)
+        document.documentElement.style.setProperty("--character-height", character.height)
+        character.introAnimation()
+
+        // History
+
+        const history = new History(character, "code")
+
+        character.on("all", () => {
+            history.recordStep()
+        })
+
+        document.addEventListener("keydown", ({ ctrlKey, key }) => {
+            if (ctrlKey) {
+                if (key === "z") history.undo()
+                else if (key === "y") history.redo()
             }
         })
 
+        // Collection
+
+
+        const collection = new Storage({
+            name: `com.lucianofelix.xar-collection:${character.width}x${character.height}`,
+            legacyNames: [
+                `XAR_${character.width}x${character.height}`,
+                `com.lucianofelix.xar-storage:${character.width}x${character.height}`
+            ],
+            encode(buffer = []) {
+                let data = ""
+                for (let character of buffer)
+                    data += character.code
+                return data
+            },
+            decode(storedData) {
+                const codeLength = character.encoder.padLength * character.height
+                const matchCode = new RegExp(`.{${codeLength}}`, "g")
+                const matches = storedData?.match(matchCode)
+                const buffer = []
+                
+                if (matches?.length) {
+                    const currentcolor = getComputedStyle(document.documentElement).getPropertyValue("color")
+
+                    for (let code of matches) {
+                        const pixels = character.getPixels(character.encoder.parse(code), currentcolor)
+
+                        buffer.push({ code, pixels })
+                    }
+                }
+                return reactive(buffer)
+            }
+        })
+
+        collection.displayName = localStorage.getItem("com.lucianofelix.xar-collection_name") || "MY CHARACTERS"
+        
+        collection.inputName = function ({target}) {
+            localStorage.setItem("com.lucianofelix.xar-collection_name", target.innerText)
+        }
+
+        collection.press = new PressGesture()
+            .on("click", (index) => {
+                const { code } = collection.buffer[index]
+
+                if (character.code !== code)
+                    character.setCode(code)
+            })
+            .on("press", (index, event) => {
+                event.preventDefault()
+                collection.remove(index)
+        })
+
+        // Others
+
+        function selectText({ target }) {
+            window.getSelection().selectAllChildren(target)
+        }
+
+
         return {
-            dotsNode,
             character,
-            draw,
-            styleScope,
-            clear,
-            storage,
-            recordStep,
-            store,
-            press
+            collection,
+            history,
+            selectText
         }
     }
 }

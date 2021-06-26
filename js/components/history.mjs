@@ -1,6 +1,6 @@
-import Watcher from "./watcher.mjs"
+import Observer from "./observer.mjs"
 
-class History extends Watcher{
+class History extends Observer {
     records = []
     pointer = -1
 
@@ -12,41 +12,42 @@ class History extends Watcher{
         this.update = update
 
         this.recordStep()
-
-        document.addEventListener("keydown", ({ ctrlKey, key }) => {
-            if (ctrlKey) {
-                if (key === "z") this.undo()
-                else if (key === "y") this.redo()
-            }
-        })
     }
 
-    recordStep() {
+    recordStep(value = this.target[this.key]) {
         this.pointer++
-        this.records[this.pointer] = this.target[this.key]
-        this.records.length = this.pointer + 1
-
-        this.emit("step")
+        this.records[this.pointer] = value
+        
+        this.clearRedo()
+        this.emit("step", value)
     }
 
     undo(steps = 1) {
         if (this.pointer - steps >= 0) {
-            this.pointer -= steps
-            this.emit("undo")
+            const value = this.records[this.pointer - steps]
 
             if (this.update)
-                this.target[this.key] = this.records[this.pointer]
+                this.target[this.key] = value
+
+            this.pointer -= steps
+            this.emit("undo", value)
         }
     }
 
     redo(steps = 1) {
         if (this.pointer + steps <= this.records.length - 1) {
-            this.pointer += steps
-            this.emit("redo")
+            const value = this.records[this.pointer + steps]
 
             if (this.update)
-                this.target[this.key] = this.records[this.pointer]
+                this.target[this.key] = value
+
+            this.pointer += steps
+            this.emit("redo", value)
         }
+    }
+
+    clearRedo() {
+        this.records.length = this.pointer + 1
     }
 }
 
