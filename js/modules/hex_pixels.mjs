@@ -1,10 +1,12 @@
 import Encoder from "./encoder.mjs"
+import Reactive from "./reactive.mjs"
 import Observer from "./observer.mjs"
 import Binaries from "./binaries.mjs"
 
 
+
 export default class HexPixels extends Observer {
-    constructor(width, height, bufferProxy) {
+    constructor(width, height) {
         super()
         
         this.width = width
@@ -12,7 +14,7 @@ export default class HexPixels extends Observer {
         this.encoder = new Encoder(36, width)
 
         const buffer = new Array(width * height).fill(false)
-        this.buffer = bufferProxy ? bufferProxy(buffer) : buffer
+        this.buffer = new Reactive(buffer)
     }
 
     get binaries() {

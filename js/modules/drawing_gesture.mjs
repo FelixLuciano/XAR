@@ -1,10 +1,8 @@
 import Observer from "./observer.mjs"
 
 export default class Drawing extends Observer {
-    dispatch({ target: dot }) {
-        const state = !dot.checked
+    dispatch(index, state, { target: dot }) {
         const dots = [...dot.parentNode.children]
-        let index = dots.indexOf(dot)
 
         const startDrawing = () => {
             this.emit("start", index, state)

@@ -1,3 +1,5 @@
+import Observer from "./observer.mjs"
+
 const defaults = {
 	name: undefined,
 	legacyNames: [],
@@ -5,23 +7,15 @@ const defaults = {
 	decode: undefined
 }
 
-export default class Storage {
+export default class Storage extends Observer {
 	constructor(config) {
+		super()
+
 		this.config = {...defaults, ...config}
 		this.buffer = undefined
 
 		this.updateLegacy()
 		this.load()
-	}
-
-	store(item) {
-		this.buffer.unshift(item)
-		this.save()
-	}
-
-	remove(index) {
-		this.buffer.splice(index, 1)
-		this.save()
 	}
 
 	updateLegacy() {
@@ -40,18 +34,29 @@ export default class Storage {
 	}
 
 	save() {
-		const toStore = this.config.encode(this.buffer)
+		const data = this.config.encode(this.buffer)
 		
-		window.localStorage.setItem(this.config.name, toStore)
+		window.localStorage.setItem(this.config.name, data)
+		this.emit("save", this)
 	}
 
 	load() {
 		const localStorage = window.localStorage.getItem(this.config.name)
-
-		if (!localStorage) this.save()
-
 		const data = this.config.decode(localStorage)
 
 		this.buffer = data
+		this.emit("load", data)
+	}
+
+	store(value, key = this.buffer.length) {
+		this.buffer[key] = value
+		this.save()
+		this.emit("store", value, key)
+	}
+
+	remove(index) {
+		this.buffer.splice(index, 1)
+		this.save()
+		this.emit("remove", index)
 	}
 }

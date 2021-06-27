@@ -16,58 +16,47 @@
     <link rel="apple-touch-icon" href="./assets/icons/icon-192x192.png">
 	<link rel="manifest" href="./manifest.json">
 
-    <link async rel="preconnect modulepreload" href="https://cdnjs.cloudflare.com/ajax/libs/vue/3.1.1/vue.esm-browser.prod.js">
-    <link async rel="preconnect stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <main id="app">
-        <section
-            id="editor-section"
-        >
+    <main>
+        <section id="editor-section">
             <div id="catacter-editor-container">
-                <template v-for="dot, i in character.buffer">
-                    <input
-                        class="character-dot"
-                        v-model="character.buffer[i]"
-                        @change="history.recordStep()"
-                        @mousedown="character.drawing.dispatch($event)"
-                        type="checkbox"
-                    >
+                <template id="character-dot-template">
+                    <button class="character-dot"></button>
                 </template>
             </div>
 
             <div
-                class="font-mono text nowrap"
-                @click="selectText($event)"
-                v-html="character.displayCode.value"
+                id="character-code"
+                class="text nowrap"
                 title="Character Hexadecimal code (Click to select)"
-            >...</div>
+            >
+                <small>0x</small><strong>00</strong>
+            </div>
 
-            <button 
-                class="inline font-mono button warnfull"
-                @click="character.clear()"
+            <button
+                id="clear-button"
+                class="inline button warnfull"
             >Clear</button>
         </section>
 
         <section id="collection-section">
-            <h1
-                id="collection-section-name"
-                class="w-full truncate text sticky-header"
-                @focus="selectText($event)"
-                @input="collection.inputName"
-                @keypress.enter="$event.target.blur()"
-                v-text="collection.displayName"
-                contenteditable="true"
-                spellcheck="false"
-            ></h1>
+            <header>
+                <h1
+                    id="collection-section-name"
+                    class="w-full truncate text-uppercase text"
+                    contenteditable="true"
+                    spellcheck="false"
+                ></h1>
+            </header>
 
             <ul id="collection-list-container">
                 <li class="collection-list-item">
                     <button
+                        id="store-button"
                         class="w-full h-full button "
                         title="Store character"
-                        @click="character.store"
                     >
                         <svg class="icon" viewBox="0 0 24 24">
                             <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
@@ -75,18 +64,15 @@
                     </button>
                 </li>
                 
-                <template v-for="character, i in collection.buffer">
+                <template id="collection-item-template">
                     <li class="collection-list-item">
                         <button
-                            class="w-full h-full button "
-                            @pointerdown="collection.press.dispatch(i)"
-                            :key="collection.length - i"
-                            :title="`Select character #${i + 1}`"
+                            class="w-full h-full button"
+                            title="Select character"
                         >
                             <img
                                 class="w-full h-full pixelated"
-                                :src="character.pixels"
-                                :alt="`Character #${i + 1}`"
+                                alt="Character image"
                             >
                         </button>
                     </li>
@@ -96,9 +82,11 @@
         </section>
     </main>
 
-    <footer>
+    <footer class="font-sans">
         &copy; 2021 Luciano Felix<span class="hidden-small">, all rights reserved</span>.
         <a href="https://github.com/FelixLuciano/XAR#readme" target="_blank" rel="noopener"><span class="hidden-small">See on </span>GitHub</a>
+
+        <button id="share-character-button" class="button right">Share</button>
     </footer>
 
     <script type="module" src="./js/app.js"></script>
