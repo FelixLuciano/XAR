@@ -37,6 +37,19 @@
 			"purpose": "any"
 		}
 	],
+	"shortcuts" : [
+		{
+		  "name": "Open 5x8",
+		  "short_name": "5x8",
+		  "url": "/?width=5&height=8",
+		  "description": "Open XAR with 5x8 editor size"
+		}, {
+		  "name": "Open 7x9",
+		  "short_name": "7x9",
+		  "url": "/?width=7&height=9",
+		  "description": "Open XAR with 7x9 editor size"
+		}
+	],
 	"screenshots": [
 		{
 			"src": "./assets/screenshots/app-desktop.webp",

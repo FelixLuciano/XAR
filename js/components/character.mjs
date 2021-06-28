@@ -7,8 +7,8 @@ import Template from "../modules/template.mjs"
 // Creating
 
 const params = new URLSearchParams(location.search)
-const width = parseInt(params.get("width")) || 5
-const height = parseInt(params.get("height")) || 8
+const width = Math.abs(parseInt(params.get("width"))) || 5
+const height = Math.abs(parseInt(params.get("height"))) || 8
 const character = new HexPixels(width, height)
 
 // Mounting

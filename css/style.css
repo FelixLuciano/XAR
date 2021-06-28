@@ -90,7 +90,7 @@ a:is(:active, :visited) {
 	text-overflow: ellipsis;
 }
 
-@media (max-width: 26rem) {
+@media (max-width: 27rem) {
 	.hidden-small {
 		display: none;
 	}
@@ -200,7 +200,6 @@ header {
 	display: grid;
 	grid-template-columns: 100%;
 	grid-template-rows: 0fr 1fr;
-	/* gap: 2rem; */
 	overflow-y: auto;
 }
 
