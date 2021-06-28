@@ -4,7 +4,8 @@ await esbuild.build({
     entryPoints: ["./src/js/main.js"],
     outfile: "./app.js",
     target: "esnext",
-    bundle: true
+    bundle: true,
+    minify: true
 })
 
 await esbuild.build({
