@@ -6,7 +6,7 @@ import Template from "../modules/template.mjs"
 
 // Creating
 
-const params = new URLSearchParams(window.location.search)
+const params = new URLSearchParams(location.search)
 const width = parseInt(params.get("width")) || 5
 const height = parseInt(params.get("height")) || 8
 const character = new HexPixels(width, height)
@@ -79,7 +79,7 @@ characterCode_node.innerHTML = codeEncoder.encode(character.binaries)
 
 // Page URL parameters
 
-function updateParam(name, value, href = window.location.search) {
+function updateParam(name, value, href = location.href) {
     const matchValuePattern = `(?<=[?|&]${name}\=)\\w+`;
     const matchValue = new RegExp(matchValuePattern, "g")
     const newHref = href.replace(matchValue, value)
@@ -87,9 +87,7 @@ function updateParam(name, value, href = window.location.search) {
     window.history.pushState(null, "", newHref)
 }
 
-// window.location.search = "coco"
-
-const initialParams = window.location.origin + `?width=${character.width}&height=${character.height}&code=${character.code}`
+const initialParams = location.origin + location.pathname + `?width=${character.width}&height=${character.height}&code=${character.code}`
 
 character.on("all", () => {
     updateParam("code", character.code)
@@ -111,7 +109,7 @@ shareCharacterButton_node.addEventListener("click", (event) => {
     event.preventDefault()
 
     window.navigator.share({
-        url: window.location.href
+        url: location.href
     })
 })
 
