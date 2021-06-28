@@ -42,18 +42,32 @@
 		  "name": "Open 5x8",
 		  "short_name": "5x8",
 		  "url": "https://lucianofelix.com.br/XAR/?width=5&height=8",
-		  "description": "Open XAR with 5x8 editor size"
+		  "description": "Open XAR with 5x8 editor size",
+		  "icons": [
+			  {
+				  "src": "./assets/icons/icon-96x96.png",
+				  "sizes": "96x96",
+				  "type": "image/png"
+			  }
+		  ]
 		}, {
 		  "name": "Open 7x9",
 		  "short_name": "7x9",
 		  "url": "https://lucianofelix.com.br/XAR/?width=7&height=9",
-		  "description": "Open XAR with 7x9 editor size"
+		  "description": "Open XAR with 7x9 editor size",
+		  "icons": [
+			  {
+				  "src": "./assets/icons/icon-96x96.png",
+				  "sizes": "96x96",
+				  "type": "image/png"
+			  }
+		  ]
 		}
 	],
 	"screenshots": [
 		{
 			"src": "./assets/screenshots/app-desktop.webp",
-			"sizes": "1280x720",
+			"sizes": "1366x768",
 			"type": "image/webp"
 		}
 	]
