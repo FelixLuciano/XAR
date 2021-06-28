@@ -77,24 +77,6 @@ character.buffer.on("set", () => {
 
 characterCode_node.innerHTML = codeEncoder.encode(character.binaries)
 
-// Page URL parameters
-
-function updateParam(name, value, href = location.href) {
-    const matchValuePattern = `(?<=[?|&]${name}\=)\\w+`;
-    const matchValue = new RegExp(matchValuePattern, "g")
-    const newHref = href.replace(matchValue, value)
-
-    window.history.pushState(null, "", newHref)
-}
-
-const initialParams = location.origin + location.pathname + `?width=${character.width}&height=${character.height}&code=${character.code}`
-
-character.on("all", () => {
-    updateParam("code", character.code)
-})
-
-window.history.pushState(null, "", initialParams)
-
 // Clear button
 
 const clearButton_node = document.getElementById("clear-button")
@@ -109,7 +91,7 @@ shareCharacterButton_node.addEventListener("click", (event) => {
     event.preventDefault()
 
     window.navigator.share({
-        url: location.href
+        url: `https://lucianofelix.com.br/XAR/?width=${character.width}&height=${character.height}&code=${character.code}`
     })
 })
 
