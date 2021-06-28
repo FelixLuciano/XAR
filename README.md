@@ -44,5 +44,11 @@ void loop() {}
 
 See [LiquidCrystal reference](https://www.arduino.cc/en/Reference/LiquidCrystal).
 
+### Sizes
+
+It is possible to create different character sizes by passing `width` and `height` arguments in the application address. See the following example:
+
+    https://lucianofelix.com.br/XAR/?width=7&height=9
+
 ## License
 This project is [MIT licensed](https://github.com/FelixLuciano/XAR/blob/main/LICENSE).

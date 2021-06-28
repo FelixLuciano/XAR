@@ -90,8 +90,16 @@ const shareCharacterButton_node = document.getElementById("share-character-butto
 shareCharacterButton_node.addEventListener("click", (event) => {
     event.preventDefault()
 
+    let params = `code=${character.code}`
+
+    if (character.width !== 5)
+        params =  `widthe=${character.width}&` + params
+
+    if (character.height !== 8)
+        params =  `heighte=${character.height}&` + params
+
     window.navigator.share({
-        url: `https://lucianofelix.com.br/XAR/?width=${character.width}&height=${character.height}&code=${character.code}`
+        url: `https://lucianofelix.com.br/XAR/?${params}`
     })
 })
 

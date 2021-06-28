@@ -72,14 +72,13 @@ export default class HexPixels extends Observer {
         return this.getPixels(this.binaries, currentcolor)
     }
 
-    toggleDot(index, value, isSilent = false) {
-        const newValue = value || !this.buffer[index]
+    toggleDot(index, value=!this.buffer[index], isSilent = false) {
         const oldValue = this.buffer[index]
 
-        this.buffer[index] = newValue
+        this.buffer[index] = value
 
-        if (!isSilent && oldValue !== newValue)
-            this.emit("input")
+        if (!isSilent && oldValue !== value)
+            this.emit("input", value)
     }
 
     async clear(isSilent = false) {
