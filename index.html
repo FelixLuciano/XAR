@@ -25,44 +25,25 @@
         <section id="editor-section">
             <div id="catacter-editor-container">
                 <template id="character-dot-template">
-                    <button
-                        class="character-dot"
-                        aria-label="character-dot"
-                    ></button>
+                    <button class="character-dot" aria-label="character-dot"></button>
                 </template>
             </div>
 
-            <div
-                id="character-code"
-                class="text nowrap"
-                title="Character Hexadecimal code (Click to select)"
-            >
+            <div id="character-code" class="text nowrap" title="Character Hexadecimal code (Click to select)">
                 <small>0x</small><strong>00</strong>
             </div>
 
-            <button
-                id="clear-button"
-                class="inline button warnfull"
-            >Clear</button>
+            <button id="clear-button" class="inline button warnfull">Clear</button>
         </section>
 
         <section id="collection-section">
             <header>
-                <h1
-                    id="collection-section-name"
-                    class="w-full truncate text-uppercase text"
-                    contenteditable="true"
-                    spellcheck="false"
-                ></h1>
+                <h1 id="collection-section-name" class="w-full truncate text-uppercase text" contenteditable="true" spellcheck="false"></h1>
             </header>
 
             <ul id="collection-list-container">
                 <li class="collection-list-item">
-                    <button
-                        id="store-button"
-                        class="w-full h-full button "
-                        title="Store character"
-                    >
+                    <button id="store-button" class="w-full h-full button" title="Store character" >
                         <svg class="icon" viewBox="0 0 24 24">
                             <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
                         </svg>
@@ -71,14 +52,8 @@
                 
                 <template id="collection-item-template">
                     <li class="collection-list-item">
-                        <button
-                            class="w-full h-full button"
-                            title="Select character"
-                        >
-                            <img
-                                class="w-full h-full pixelated"
-                                alt="Character image"
-                            >
+                        <button class="w-full h-full button" title="Select character">
+                            <img class="w-full h-full pixelated" alt="Character image">
                         </button>
                     </li>
                 </template>

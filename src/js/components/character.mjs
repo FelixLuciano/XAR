@@ -111,14 +111,14 @@ document.documentElement.style.setProperty("--character-height", character.heigh
 const code = params.get("code")
 
 async function introAnimation() {
-    if (character.width === 5 && character.height === 8) {
+    if (code)
+        character.setCode(code)
+        
+    else if (character.width === 5 && character.height === 8) {
         await character.setCode("DLI449LM", true)
         await new Promise(resolve => setTimeout(resolve, 1024))
         await character.clear(true)
     }
-
-    if (code)
-        character.setCode(code)
 }
 
 introAnimation()

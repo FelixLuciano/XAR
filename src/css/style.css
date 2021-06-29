@@ -51,7 +51,7 @@ color: var(--fore);
 h1 {
 	margin: 0;
 	font-size: 2.5em;
-	line-height: 1em;
+	line-height: 1.25em;
 }
 
 a,
@@ -177,7 +177,7 @@ main {
 }
 
 header {
-	padding: 2rem 0;
+	padding: 1.65rem 0;
 	background-color: var(--back);
 	position: sticky;
 	top: 0;
