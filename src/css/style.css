@@ -1,13 +1,13 @@
 /* root */
 
 :root {
-	--back: #EFC;
-	--fore: #8D2;
-	--soft: #5A13;
-	--hard: #5A16;
+	--back: #efc;
+	--fore: #8d2;
+	--soft: #5a13;
+	--hard: #5a16;
 	--text: #341;
-	--warn: #F62;
-	--dot-color: #6B2;
+	--warn: #f62;
+	--dot-color: #6b2;
 	--dot-check: #351;
 	--character-width: 5;
 	--character-height: 8;
@@ -16,7 +16,6 @@
 	color: var(--text);
 	font-size: 16px;
 	line-height: 1.25em;
-	
 }
 
 /* Elements */
@@ -30,20 +29,17 @@ body {
 	grid-template-rows: 1fr 3rem;
 	place-items: center;
 	cursor: default;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+		"Liberation Mono", "Courier New", monospace;
 }
 
 *,
 *:before,
 *:after {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 ::selection {
-background-color: var(--text);
-color: var(--fore);
-}
-::-moz-selection {
 	background-color: var(--text);
 	color: var(--fore);
 }
@@ -56,7 +52,7 @@ h1 {
 
 a,
 a:is(:active, :visited) {
-  color: currentColor;
+	color: currentColor;
 }
 
 /* Utilities */
@@ -70,7 +66,9 @@ a:is(:active, :visited) {
 }
 
 .font-sans {
-	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+		"Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 .text {
@@ -81,7 +79,8 @@ a:is(:active, :visited) {
 	text-transform: uppercase;
 }
 
-.nowrap, .truncate {
+.nowrap,
+.truncate {
 	white-space: nowrap;
 }
 
@@ -207,7 +206,7 @@ footer {
 	width: 100%;
 	padding: 0 var(--spacing);
 	background-color: var(--soft);
-	font-size: .8em;
+	font-size: 0.8em;
 	font-weight: bold;
 	line-height: 3rem;
 	white-space: nowrap;
@@ -218,17 +217,26 @@ footer {
 /* Layout */
 
 #catacter-editor-container {
-    --container-height: clamp(16rem, calc(100vh - 2 * var(--spacing) - 3rem - 1.25rem - 2.5rem - 3rem), 36rem);
-    --dot-width: calc((var(--container-height) - 6 * var(--spacing) - (var(--character-height) - 1) * .125rem) / var(--character-height));
-    height: var(--container-height);
-    min-height: 16rem;
-    max-height: 36rem;
+	--container-height: clamp(
+		16rem,
+		calc(100vh - 2 * var(--spacing) - 3rem - 1.25rem - 2.5rem - 3rem),
+		36rem
+	);
+	--dot-width: calc(
+			(
+				var(--container-height) - 6 * var(--spacing) -
+					(var(--character-height) - 1) * 0.125rem
+			) / var(--character-height)
+	);
+	height: var(--container-height);
+	min-height: 16rem;
+	max-height: 36rem;
 	padding: calc(3 * var(--spacing));
-    background-color: var(--fore);
+	background-color: var(--fore);
 	display: grid;
-    grid-template-columns: repeat(var(--character-width), var(--dot-width));
-    grid-template-rows: repeat(var(--character-height), 1fr);
-	grid-gap: .125rem;
+	grid-template-columns: repeat(var(--character-width), var(--dot-width));
+	grid-template-rows: repeat(var(--character-height), 1fr);
+	grid-gap: 0.125rem;
 }
 
 #collection-list-container {
@@ -248,8 +256,8 @@ footer {
 }
 
 .collection-list-item {
-    width: 100%;
-    aspect-ratio: var(--character-width) / var(--character-height);
+	width: 100%;
+	aspect-ratio: var(--character-width) / var(--character-height);
 }
 
 .collection-list-item:not(:first-child) > button {

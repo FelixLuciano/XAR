@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
     <title>XAR - Custom LCD Characters editor</title>
-	<meta name="Description" content="Custom LCD Characters editor">
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="apple-mobile-web-app-title" content="XAR">
-	<meta name="application-name" content="XAR">
-	<meta name="theme-color" content="#EEFFCC">
+    <meta name="Description" content="Custom LCD Characters editor">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-title" content="XAR">
+    <meta name="application-name" content="XAR">
+    <meta name="theme-color" content="#EEFFCC">
 
     <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/icons/icon.svg">
     <link rel="shortcut icon" sizes="192x192" href="./assets/icons/icon-192x192.png">
     <link rel="shortcut icon" sizes="512x512" href="./assets/icons/icon-512x512.png">
     <link rel="shortcut icon" type="image/png" href="https://lucianofelix.com.br/XAR//assets/icons/icon-192x192.png">
     <link rel="apple-touch-icon" href="./assets/icons/icon-192x192.png">
-	<link rel="manifest" href="./manifest.json">
-    
+    <link rel="manifest" href="./manifest.json">
+
     <link rel="stylesheet" href="./style.css">
     <script src="./app.js"></script>
 </head>
+
 <body>
     <main>
-        <section id="editor-section">
+        <div id="editor-section">
             <div id="catacter-editor-container">
                 <template id="character-dot-template">
                     <button class="character-dot" aria-label="character-dot"></button>
@@ -34,7 +36,7 @@
             </div>
 
             <button id="clear-button" class="inline button warnfull">Clear</button>
-        </section>
+        </div>
 
         <section id="collection-section">
             <header>
@@ -43,13 +45,13 @@
 
             <ul id="collection-list-container">
                 <li class="collection-list-item">
-                    <button id="store-button" class="w-full h-full button" title="Store character" >
+                    <button id="store-button" class="w-full h-full button" title="Store character">
                         <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
                         </svg>
                     </button>
                 </li>
-                
+
                 <template id="collection-item-template">
                     <li class="collection-list-item">
                         <button class="w-full h-full button" title="Select character">
@@ -57,8 +59,7 @@
                         </button>
                     </li>
                 </template>
-
-            </section>
+            </ul>
         </section>
     </main>
 
@@ -69,4 +70,5 @@
         <button id="share-character-button" class="button right">Share</button>
     </footer>
 </body>
+
 </html>
