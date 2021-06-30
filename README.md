@@ -45,13 +45,13 @@ void loop() {}
 
 See the [LiquidCrystal reference](https://www.arduino.cc/en/Reference/LiquidCrystal).
 
-### Custom sizes
+## Custom sizes
 
 It is possible to create different character sizes by passing `width` and `height` arguments in the application address. See the following example:
 
 [lucianofelix.com.br/XAR/?width=`7`&height=`9`](https://lucianofelix.com.br/XAR/?width=7&height=9)
 
-### Share characters
+## Share characters
 
 It is also possible to share a character via a URL with the `character code` which can be obtained by clicking the share button in the footer. See the following example:
 
