@@ -13,7 +13,7 @@
 
 ![XAR app desktop](./assets/screenshots/app-desktop.webp)
 
-Access at [LucianoFelix.com.br/XAR](https://lucianofelix.com.br/XAR/)
+Access at [GitHub.LucianoFelix.com.br/XAR](https://github.lucianofelix.com.br/XAR/)
 
 ## Arduino example
 
@@ -25,7 +25,7 @@ Access at [LucianoFelix.com.br/XAR](https://lucianofelix.com.br/XAR/)
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 // Custom character binaries (Put your code in the brackets)
-// https://lucianofelix.com.br/XAR/?code=0AVVE400
+// https://github.lucianofelix.com.br/XAR/?code=0AVVE400
 byte hearth[8] = {0x00, 0x0A, 0x1F, 0x1F, 0x0E, 0x04, 0x00, 0x00};
 
 void setup() {
@@ -50,13 +50,13 @@ See the [LiquidCrystal reference](https://www.arduino.cc/en/Reference/LiquidCrys
 
 It is possible to create different character sizes by passing `width` and `height` arguments in the application address. See the following example:
 
-[lucianofelix.com.br/XAR/?width=`7`&height=`9`](https://lucianofelix.com.br/XAR/?width=7&height=9)
+[github.lucianofelix.com.br/XAR/?width=`7`&height=`9`](https://github.lucianofelix.com.br/XAR/?width=7&height=9)
 
 ## Share characters
 
 It is also possible to share a character via a URL with the `character code` which can be obtained by clicking the share button in the footer. See the following example:
 
-[lucianofelix.com.br/XAR/?code=`0AVVE400`](https://lucianofelix.com.br/XAR/?code=0AVVE400)
+[github.lucianofelix.com.br/XAR/?code=`0AVVE400`](https://github.lucianofelix.com.br/XAR/?code=0AVVE400)
 
 ## License
 This project is [MIT licensed](https://github.com/FelixLuciano/XAR/blob/main/LICENSE).
